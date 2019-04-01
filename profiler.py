@@ -9,6 +9,9 @@ from lmfit import Minimizer, Parameters, report_fit
 
 import random
 
+
+# testing
+
 from matplotlib.backends.qt_compat import QtCore, QtWidgets, is_pyqt5
 if is_pyqt5():
     from matplotlib.backends.backend_qt5agg import (
