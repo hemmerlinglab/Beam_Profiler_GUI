@@ -102,34 +102,39 @@ class App(QWidget):
     @pyqtSlot()
     def button_click(self):
         print('Fit Button Pressed')
-	
-     # define an array of x and y coordinates
-         self.x = np.array([])
-         self.y = np.array([])
-        
-        if reset== True:
-            self.x = np.array([])
-	    self.y = np.array([])
+    
+    # define an array of x and y coordinates
+        self.x = np.array([])
+        self.y = np.array([])
+    
 
-        else 
-            for k in range(self.no_of_rows):
-            
-                hlp = self.tableWidget.item(k,0)
-                if not hlp is None:
-                    self.x = np.append(self.x, np.float(hlp.text()))
-                else:
-                    break
-                hlp = self.tableWidget.item(k,1)
-                if not hlp is None:
-                    self.y = np.append(self.y, np.float(hlp.text()))
+# Here I want to have an if else statement, if the reset button was clicked, reinitialize, else, do what it did before
+
+
+#       if reset== True:
+#           self.x = np.array([])
+#           self.y = np.array([])
+#
+#        else 
+        for k in range(self.no_of_rows):
+        
+            hlp = self.tableWidget.item(k,0)
+            if not hlp is None:
+                self.x = np.append(self.x, np.float(hlp.text()))
+            else:
+                break
+            hlp = self.tableWidget.item(k,1)
+            if not hlp is None:
+                self.y = np.append(self.y, np.float(hlp.text()))
+    
         print(self.x)
         print(self.y)
 
-        params = Parameters()
+        params = parameters()
         params.add('amplitude', value=np.max(self.y), min=(np.max(self.y) - np.min(self.y))/2.0, max=(np.max(self.y) - np.min(self.y)))
         params.add('waist', value=(np.max(self.x)-np.min(self.x))/2.0, min=10.0, max=2000)
         params.add('x_offset', value=np.mean(self.x), min=np.min(self.x), max = np.max(self.x))
-        params.add('y_offset', value=0.0, min=0.00, max=np.max(self.y), vary = False)
+        params.add('y_offset', value=0.0, min=0.00, max=np.max(self.y), vary = false)
 
         # do fit, here with leastsq model
         minner = Minimizer(fcn2min, params, fcn_args=(self.x, self.y))
