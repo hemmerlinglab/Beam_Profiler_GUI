@@ -1,4 +1,11 @@
 - add conversion from inches to microns, want to be able to add the data in inches and have it convert
 - auto update the fit to automatically fit when the data is changed
+	*not quite sure where to start on this one
 - Make a reset button which clears the data and fit
-
+	*want to make an if else statement inside the push_button function (or similarly named function)
+	if reset button was pressed == reinitialize the entire plot, set the data to all zeros and make the plot show up 	
+	as it did when start up the GUI, with nothing on it
+	else plot the data like it was doing before
+- possibly make a conversion button which automatically converts the numbers when pressed
+	*this seems like a very easy thing to do, when pressed, multiple all the xdata by 25.4 to convert from inches 1/1000 inch to microns
+	(double check this)
