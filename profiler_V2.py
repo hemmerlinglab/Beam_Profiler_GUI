@@ -71,7 +71,7 @@ class App(QWidget):
         
         # Fit to sample data button
         self.button2 = QPushButton('Fit to Sample Data?', self)
-        self.button2.clicked.connect(self.sample_data)
+        self.button2.clicked.connect(self.sample_data_button_click)
 
         # Reset button the clear the plot
 #        self.button3 = QPushButton('Clear plot data?', self)
@@ -105,7 +105,21 @@ class App(QWidget):
       
         self.show()
 
-        
+    def sample_data(self):
+        hlp = np.array([
+           [ 1524,3.66 ], 
+           [ 1651,3.5 ],
+           [ 1676.4,3.17 ],
+           [ 1701.8,2.53 ],
+           [ 1727.2,1.71 ],
+           [ 1752.6,0.87 ],
+           [ 1778,0.32 ],
+           [ 1803.4,0.1 ],
+           [ 1828.8,0.016 ],
+           [ 1854.2,0.001 ],
+            ])
+        return hlp
+       
     @pyqtSlot()
     def button_click(self):
         print('Fit Button Pressed')
@@ -147,8 +161,9 @@ class App(QWidget):
 
         self.canvas.plot(fit_plot = result)
     
-    def sample_data(self):
-        print('reset button pressed')
+    @pyqtSlot()
+    def sample_data_button_click(self):
+        print('sample data button pressed')
         self.x = np.array([])
         self.y = np.array([])
 
@@ -181,21 +196,7 @@ class App(QWidget):
 
         self.canvas.plot(fit_plot = result)
 
-    def sample_data(self):
-        hlp = np.array([
-           [ 1524,3.66 ], 
-           [ 1651,3.5 ],
-           [ 1676.4,3.17 ],
-           [ 1701.8,2.53 ],
-           [ 1727.2,1.71 ],
-           [ 1752.6,0.87 ],
-           [ 1778,0.32 ],
-           [ 1803.4,0.1 ],
-           [ 1828.8,0.016 ],
-           [ 1854.2,0.001 ],
-            ])
-        return hlp
-    
+   
     def zero_data(self):
         hlp = np.array([
            [ 0,0 ], 
