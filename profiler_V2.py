@@ -6,6 +6,8 @@ from PyQt5.QtCore import pyqtSlot
 import numpy as np
 import scipy
 from lmfit import Minimizer, Parameters, report_fit
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QLineEdit
 
 import random
 
@@ -67,13 +69,13 @@ class App(QWidget):
         self.button = QPushButton('Fit', self)
         self.button.clicked.connect(self.button_click)
         
-        # Reset button
+        # Fit to sample data button
         self.button2 = QPushButton('Fit to Sample Data?', self)
         self.button2.clicked.connect(self.sample_data)
 
-        # Sample Data Button
-        self.button3 = QPushButton('Sample data?',self)
-        
+        # Reset button the clear the plot
+#        self.button3 = QPushButton('Clear plot data?', self)
+#        self.button3.clicked.connect(self.clear_plot)
 	
 	# sets up the Figure Plotting
         self.canvas = PlotCanvas(self, width=5, height=4)
@@ -91,6 +93,7 @@ class App(QWidget):
         self.layout.addWidget(self.canvas)       # Creates the plot widget   
         self.layout.addWidget(self.button)       # button widget which fits the data
         self.layout.addWidget(self.button2)      # button widget which reinitializes the plot
+#        self.layout.addWidget(self.button3)      # button widget which clears the previous plot data
         self.layout.addWidget(self.textbox)      # textbox to output the relevant params: waist, amplitude, offsets
         self.setLayout(self.layout)              # sets it all up            
  
@@ -208,7 +211,12 @@ class App(QWidget):
             ])
         return hlp
 
-
+  #  @pyqtSlot()
+  #  def Clear(self):
+  #      self.widget.canvas.ax.clear()
+  #      self.widget.canvas.draw()
+  #      self.widget_2.canvas.ax.clear()
+  #               
     def createTable(self):
        # Create table
         self.tableWidget = QTableWidget()
@@ -243,13 +251,16 @@ class PlotCanvas(FigureCanvas):
         self.x = []
         self.y = []
         self.plot()
+        fig.clear() # clears old plot data
+
        
  
  
     def plot(self, fit_plot = None):
         ax = self.figure.add_subplot(111)
         # data
-        ax.plot(self.x, self.y, 'ro')        
+        ax.plot(self.x, self.y, 'ro')  
+        
 	# fit
         if not fit_plot is None:
             (fit_x, fit_y) = fcn2min(fit_plot.params, self.x, None, plot_fit = True)
@@ -258,9 +269,9 @@ class PlotCanvas(FigureCanvas):
         ax.set_ylabel('Integrated Intensity')
         self.figure.tight_layout()  # ensures the view of the layout is always visible no matter size of GUI
         self.draw()
-        self.bind()
-        
- 
+        ax.clear()  #clears old plot data
+    
+     
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
