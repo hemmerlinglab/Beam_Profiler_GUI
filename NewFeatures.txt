@@ -1,0 +1,6 @@
+Changes implemented:
+- x and y axes labeled
+- previous plot data gets deleted automatically
+- shows an example plot, added a button which reverts back the entire plot to
+fitting to sample data
+
