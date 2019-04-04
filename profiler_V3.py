@@ -6,6 +6,8 @@ from PyQt5.QtCore import pyqtSlot
 import numpy as np
 import scipy
 from lmfit import Minimizer, Parameters, report_fit
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QLineEdit
 
 import random
 
@@ -22,6 +24,7 @@ from matplotlib.figure import Figure
 
 
 # define objective function: returns the array to be minimized
+# creating the model to fit to
 def fcn2min(params, x, data, plot_fit = False):
     """Model a decaying sine wave and subtract data."""
     amplitude = params['amplitude']
@@ -37,7 +40,8 @@ def fcn2min(params, x, data, plot_fit = False):
         x_plot = np.linspace(np.min(x), np.max(x), 100)
         model = amplitude/2.0 * (1 - scipy.special.erf(np.sqrt(2.0) * (x_plot - x_offset)/waist)) + y_offset
         return (x_plot, model)
-    
+
+   
 
 # Creation of the Widget
 class App(QWidget):
@@ -67,10 +71,11 @@ class App(QWidget):
         self.button = QPushButton('Fit', self)
         self.button.clicked.connect(self.button_click)
         
-        # Reset button
-        self.button2 = QPushButton('Reset', self)
-        self.button2.clicked.connect(self.button_click)
-	
+        # Fit to sample data button
+        self.button2 = QPushButton('Fit to Sample Data?', self)
+        self.button2.clicked.connect(self.sample_data_button_click)
+
+
 	# sets up the Figure Plotting
         self.canvas = PlotCanvas(self, width=5, height=4)
         self.canvas.move(0,0)
@@ -87,6 +92,7 @@ class App(QWidget):
         self.layout.addWidget(self.canvas)       # Creates the plot widget   
         self.layout.addWidget(self.button)       # button widget which fits the data
         self.layout.addWidget(self.button2)      # button widget which reinitializes the plot
+#        self.layout.addWidget(self.button3)      # button widget which clears the previous plot data
         self.layout.addWidget(self.textbox)      # textbox to output the relevant params: waist, amplitude, offsets
         self.setLayout(self.layout)              # sets it all up            
  
@@ -98,30 +104,73 @@ class App(QWidget):
       
         self.show()
 
-        
+    def sample_data(self):
+        hlp = np.array([
+           [ 1524,3.66 ], 
+           [ 1651,3.5 ],
+           [ 1676.4,3.17 ],
+           [ 1701.8,2.53 ],
+           [ 1727.2,1.71 ],
+           [ 1752.6,0.87 ],
+           [ 1778,0.32 ],
+           [ 1803.4,0.1 ],
+           [ 1828.8,0.016 ],
+           [ 1854.2,0.001 ],
+            ])
+        return hlp
+       
     @pyqtSlot()
     def button_click(self):
         print('Fit Button Pressed')
-	
-     # define an array of x and y coordinates
-         self.x = np.array([])
-         self.y = np.array([])
-        
-        if reset== True:
-            self.x = np.array([])
-	    self.y = np.array([])
+        self.x = np.array([])
+        self.y = np.array([])
 
-         
-            for k in range(self.no_of_rows):
+        for k in range(self.no_of_rows):
             
-                hlp = self.tableWidget.item(k,0)
-                if not hlp is None:
-                    self.x = np.append(self.x, np.float(hlp.text()))
-                else:
-                    break
-                hlp = self.tableWidget.item(k,1)
-                if not hlp is None:
-                    self.y = np.append(self.y, np.float(hlp.text()))
+            hlp = self.tableWidget.item(k,0)
+            if not hlp is None:
+                self.x = np.append(self.x, np.float(hlp.text()))
+            else:
+                break
+            hlp = self.tableWidget.item(k,1)
+            if not hlp is None:
+                self.y = np.append(self.y, np.float(hlp.text()))
+
+        print(self.x)
+        print(self.y)
+
+        params = Parameters()
+        params.add('amplitude', value=np.max(self.y), min=(np.max(self.y) - np.min(self.y))/2.0, max=(np.max(self.y) - np.min(self.y)))
+        params.add('waist', value=(np.max(self.x)-np.min(self.x))/2.0, min=10.0, max=2000)
+        params.add('x_offset', value=np.mean(self.x), min=np.min(self.x), max = np.max(self.x))
+        params.add('y_offset', value=0.0, min=0.00, max=np.max(self.y), vary = False)
+
+        # do fit, here with leastsq model
+        minner = Minimizer(fcn2min, params, fcn_args=(self.x, self.y))
+        result = minner.minimize()
+
+        # write error report
+        self.textbox.setText("")
+        for k in params.keys():
+            my_str = str(result.params[k].value)
+            self.textbox.append(str(k) + " = " + my_str + "\n")
+
+        self.canvas.x = self.x
+        self.canvas.y = self.y
+
+        self.canvas.plot(fit_plot = result)
+    
+    @pyqtSlot()
+    def sample_data_button_click(self):
+        print('sample data button pressed')
+        self.x = np.array([])
+        self.y = np.array([])
+
+        hlp = self.sample_data()
+           
+        self.x = hlp[:,0]
+        self.y = hlp[:,1]
+        
         print(self.x)
         print(self.y)
 
@@ -146,9 +195,21 @@ class App(QWidget):
 
         self.canvas.plot(fit_plot = result)
 
-    def reset(self):
-        print('reset')
-        return True
+   
+    def zero_data(self):
+        hlp = np.array([
+           [ 0,0 ], 
+           [ 0,0 ],
+           [ 0,0 ],
+           [ 0,0 ],
+           [ 0,0 ],
+           [ 0,0 ],
+           [ 0,0 ],
+           [ 0,0 ],
+           [ 0,0 ],
+           [ 0,0],
+            ])
+        return hlp
 
     def createTable(self):
        # Create table
@@ -158,31 +219,8 @@ class App(QWidget):
         self.tableWidget.move(0,0)
         
 	# Sample data that will fit to error function
-        hlp = np.array([
-           [ 1524,3.66 ], 
-           [ 1651,3.5 ],
-           [ 1676.4,3.17 ],
-           [ 1701.8,2.53 ],
-           [ 1727.2,1.71 ],
-           [ 1752.6,0.87 ],
-           [ 1778,0.32 ],
-           [ 1803.4,0.1 ],
-           [ 1828.8,0.016 ],
-           [ 1854.2,0.001 ],
-            ])
+        hlp = self.sample_data()
 
-#        hlp = np.array([
-#           [ 0,0 ], 
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#            ])
         self.x = hlp[:, 0]
         self.y = hlp[:, 1]
 
@@ -190,7 +228,6 @@ class App(QWidget):
 
             self.tableWidget.setItem(k,0, QTableWidgetItem(str(self.x[k])))
             self.tableWidget.setItem(k,1, QTableWidgetItem(str(self.y[k])))
-
 
 class PlotCanvas(FigureCanvas):
  
@@ -208,21 +245,27 @@ class PlotCanvas(FigureCanvas):
         self.x = []
         self.y = []
         self.plot()
+        fig.clear() # clears old plot data
+
+       
  
  
     def plot(self, fit_plot = None):
         ax = self.figure.add_subplot(111)
         # data
-        ax.plot(self.x, self.y, 'ro')        
+        ax.plot(self.x, self.y, 'ro')  
+        
 	# fit
         if not fit_plot is None:
             (fit_x, fit_y) = fcn2min(fit_plot.params, self.x, None, plot_fit = True)
             ax.plot(fit_x, fit_y)
         ax.set_xlabel('Position in Microns')
         ax.set_ylabel('Integrated Intensity')
-        self.figure.tight_layout()
+        self.figure.tight_layout()  # ensures the view of the layout is always visible no matter size of GUI
         self.draw()
- 
+        ax.clear()  #clears old plot data
+    
+     
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

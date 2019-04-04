@@ -1,4 +1,3 @@
-
 import sys
 from PyQt5.QtWidgets import QSizePolicy, QTextEdit, QMainWindow, QApplication, QWidget, QAction, QTableWidget,QTableWidgetItem,QVBoxLayout,QPushButton, QHBoxLayout
 from PyQt5.QtGui import QIcon
@@ -8,8 +7,6 @@ import scipy
 from lmfit import Minimizer, Parameters, report_fit
 
 import random
-
-
 
 from matplotlib.backends.qt_compat import QtCore, QtWidgets, is_pyqt5
 if is_pyqt5():
@@ -39,9 +36,9 @@ def fcn2min(params, x, data, plot_fit = False):
         return (x_plot, model)
     
 
-# Creation of the Widget
+
 class App(QWidget):
-    # initialization of class
+ 
     def __init__(self):
         super().__init__()
         self.title = 'PyQt5 table - pythonspot.com'
@@ -57,38 +54,25 @@ class App(QWidget):
         self.setGeometry(self.left, self.top, self.width, self.height)
  
         self.createTable()
- 	
-	# Creating a button which fits the data to the error function 
-	# Defined from the qt library, defines the widgets here
-	# qt library is a collection of widgets
-	# obtains the object push button
-        
-        # Fit button
+ 
         self.button = QPushButton('Fit', self)
+        self.button.setToolTip('This is an example button')
+        self.button.move(100,70)
         self.button.clicked.connect(self.button_click)
-        
-        # Reset button
-        self.button2 = QPushButton('Reset', self)
-        self.button2.clicked.connect(self.button_click)
-	
-	# sets up the Figure Plotting
+
+
         self.canvas = PlotCanvas(self, width=5, height=4)
         self.canvas.move(0,0)
 
-        
         self.textbox = QTextEdit()
 
         # Add box layout, add table to box layout and add box layout to widget
-	# To add any kind of new widget, you must add it to your layout
-        self.layout = QHBoxLayout()              # The QHBoxLayout class lines up widgets horizontally, create widget
-	
-	# List of widgets being added
-        self.layout.addWidget(self.tableWidget)  # Table widget to put the data in
-        self.layout.addWidget(self.canvas)       # Creates the plot widget   
-        self.layout.addWidget(self.button)       # button widget which fits the data
-        self.layout.addWidget(self.button2)      # button widget which reinitializes the plot
-        self.layout.addWidget(self.textbox)      # textbox to output the relevant params: waist, amplitude, offsets
-        self.setLayout(self.layout)              # sets it all up            
+        self.layout = QHBoxLayout()
+        self.layout.addWidget(self.tableWidget) 
+        self.layout.addWidget(self.canvas) 
+        self.layout.addWidget(self.button) 
+        self.layout.addWidget(self.textbox) 
+        self.setLayout(self.layout) 
  
         # Show widget
         self.show()
@@ -101,27 +85,23 @@ class App(QWidget):
         
     @pyqtSlot()
     def button_click(self):
-        print('Fit Button Pressed')
-	
-     # define an array of x and y coordinates
-         self.x = np.array([])
-         self.y = np.array([])
-        
-        if reset== True:
-            self.x = np.array([])
-	    self.y = np.array([])
+        print('PyQt5 button click')
+        #self.tableWidget.setItem(0,0, QTableWidgetItem("pressed"))
 
-         
-            for k in range(self.no_of_rows):
+        self.x = np.array([])
+        self.y = np.array([])
+
+        for k in range(self.no_of_rows):
             
-                hlp = self.tableWidget.item(k,0)
-                if not hlp is None:
-                    self.x = np.append(self.x, np.float(hlp.text()))
-                else:
-                    break
-                hlp = self.tableWidget.item(k,1)
-                if not hlp is None:
-                    self.y = np.append(self.y, np.float(hlp.text()))
+            hlp = self.tableWidget.item(k,0)
+            if not hlp is None:
+                self.x = np.append(self.x, np.float(hlp.text()))
+            else:
+                break
+            hlp = self.tableWidget.item(k,1)
+            if not hlp is None:
+                self.y = np.append(self.y, np.float(hlp.text()))
+
         print(self.x)
         print(self.y)
 
@@ -146,18 +126,22 @@ class App(QWidget):
 
         self.canvas.plot(fit_plot = result)
 
-    def reset(self):
-        print('reset')
-        return True
 
     def createTable(self):
        # Create table
         self.tableWidget = QTableWidget()
         self.tableWidget.setRowCount(self.no_of_rows)
         self.tableWidget.setColumnCount(2)
+        #self.tableWidget.setItem(0,0, QTableWidgetItem("Cell (1,1)"))
+        #self.tableWidget.setItem(0,1, QTableWidgetItem("Cell (1,2)"))
+        #self.tableWidget.setItem(1,0, QTableWidgetItem("Cell (2,1)"))
+        #self.tableWidget.setItem(1,1, QTableWidgetItem("Cell (2,2)"))
+        #self.tableWidget.setItem(2,0, QTableWidgetItem("Cell (3,1)"))
+        #self.tableWidget.setItem(2,1, QTableWidgetItem("Cell (3,2)"))
+        #self.tableWidget.setItem(3,0, QTableWidgetItem("Cell (4,1)"))
+        #self.tableWidget.setItem(3,1, QTableWidgetItem("Cell (4,2)"))
         self.tableWidget.move(0,0)
-        
-	# Sample data that will fit to error function
+
         hlp = np.array([
            [ 1524,3.66 ], 
            [ 1651,3.5 ],
@@ -170,19 +154,6 @@ class App(QWidget):
            [ 1828.8,0.016 ],
            [ 1854.2,0.001 ],
             ])
-
-#        hlp = np.array([
-#           [ 0,0 ], 
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#            ])
         self.x = hlp[:, 0]
         self.y = hlp[:, 1]
 
@@ -191,10 +162,29 @@ class App(QWidget):
             self.tableWidget.setItem(k,0, QTableWidgetItem(str(self.x[k])))
             self.tableWidget.setItem(k,1, QTableWidgetItem(str(self.y[k])))
 
+        #self.tableWidget.installEventFilters(self)
+
+        # table selection change
+        self.tableWidget.doubleClicked.connect(self.on_click)
+ 
+    @pyqtSlot()
+    def on_click(self):
+        print("\n")
+        for currentQTableWidgetItem in self.tableWidget.selectedItems():
+            print(currentQTableWidgetItem.row(), currentQTableWidgetItem.column(), currentQTableWidgetItem.text())
+    
+    def eventFilter(self, source, event):
+        if (event.type() == QtCore.QEvent.KeyPress and
+            event.matches(QtGui.QKeySequence.Copy)):
+            self.copySelection()
+            return True
+        return super(Window, self).eventFilter(source, event)
+
+
 
 class PlotCanvas(FigureCanvas):
  
-    def __init__(self, parent=None, width=3, height=4, dpi=100):
+    def __init__(self, parent=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
  
@@ -213,18 +203,15 @@ class PlotCanvas(FigureCanvas):
     def plot(self, fit_plot = None):
         ax = self.figure.add_subplot(111)
         # data
-        ax.plot(self.x, self.y, 'ro')        
-	# fit
+        ax.plot(self.x, self.y, 'ro')
+        # fit
         if not fit_plot is None:
             (fit_x, fit_y) = fcn2min(fit_plot.params, self.x, None, plot_fit = True)
             ax.plot(fit_x, fit_y)
-        ax.set_xlabel('Position in Microns')
-        ax.set_ylabel('Integrated Intensity')
-        self.figure.tight_layout()
         self.draw()
  
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = App()
-    sys.exit(app.exec_())
+sys.exit(app.exec_())
