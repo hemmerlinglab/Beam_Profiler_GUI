@@ -68,8 +68,12 @@ class App(QWidget):
         self.button.clicked.connect(self.button_click)
         
         # Reset button
-        self.button2 = QPushButton('Reset', self)
-        self.button2.clicked.connect(self.reset)
+        self.button2 = QPushButton('Fit to Sample Data?', self)
+        self.button2.clicked.connect(self.sample_data)
+
+        # Sample Data Button
+        self.button3 = QPushButton('Sample data?',self)
+        
 	
 	# sets up the Figure Plotting
         self.canvas = PlotCanvas(self, width=5, height=4)
@@ -139,18 +143,42 @@ class App(QWidget):
         self.canvas.y = self.y
 
         self.canvas.plot(fit_plot = result)
-    def reset(self):
-        print('reset')
-        
+    
+    def sample_data(self):
+        print('reset button pressed')
+        self.x = np.array([])
+        self.y = np.array([])
 
-    def createTable(self):
-       # Create table
-        self.tableWidget = QTableWidget()
-        self.tableWidget.setRowCount(self.no_of_rows)
-        self.tableWidget.setColumnCount(2)
-        self.tableWidget.move(0,0)
+        hlp = self.sample_data()
+           
+        self.x = hlp[:,0]
+        self.y = hlp[:,1]
         
-	# Sample data that will fit to error function
+        print(self.x)
+        print(self.y)
+
+        params = Parameters()
+        params.add('amplitude', value=np.max(self.y), min=(np.max(self.y) - np.min(self.y))/2.0, max=(np.max(self.y) - np.min(self.y)))
+        params.add('waist', value=(np.max(self.x)-np.min(self.x))/2.0, min=10.0, max=2000)
+        params.add('x_offset', value=np.mean(self.x), min=np.min(self.x), max = np.max(self.x))
+        params.add('y_offset', value=0.0, min=0.00, max=np.max(self.y), vary = False)
+
+        # do fit, here with leastsq model
+        minner = Minimizer(fcn2min, params, fcn_args=(self.x, self.y))
+        result = minner.minimize()
+
+        # write error report
+        self.textbox.setText("")
+        for k in params.keys():
+            my_str = str(result.params[k].value)
+            self.textbox.append(str(k) + " = " + my_str + "\n")
+
+        self.canvas.x = self.x
+        self.canvas.y = self.y
+
+        self.canvas.plot(fit_plot = result)
+
+    def sample_data(self):
         hlp = np.array([
            [ 1524,3.66 ], 
            [ 1651,3.5 ],
@@ -163,19 +191,34 @@ class App(QWidget):
            [ 1828.8,0.016 ],
            [ 1854.2,0.001 ],
             ])
+        return hlp
+    
+    def zero_data(self):
+        hlp = np.array([
+           [ 0,0 ], 
+           [ 0,0 ],
+           [ 0,0 ],
+           [ 0,0 ],
+           [ 0,0 ],
+           [ 0,0 ],
+           [ 0,0 ],
+           [ 0,0 ],
+           [ 0,0 ],
+           [ 0,0],
+            ])
+        return hlp
 
-#        hlp = np.array([
-#           [ 0,0 ], 
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#           [ 0,0 ],
-#            ])
+
+    def createTable(self):
+       # Create table
+        self.tableWidget = QTableWidget()
+        self.tableWidget.setRowCount(self.no_of_rows)
+        self.tableWidget.setColumnCount(2)
+        self.tableWidget.move(0,0)
+        
+	# Sample data that will fit to error function
+        hlp = self.sample_data()
+
         self.x = hlp[:, 0]
         self.y = hlp[:, 1]
 
@@ -183,7 +226,6 @@ class App(QWidget):
 
             self.tableWidget.setItem(k,0, QTableWidgetItem(str(self.x[k])))
             self.tableWidget.setItem(k,1, QTableWidgetItem(str(self.y[k])))
-
 
 class PlotCanvas(FigureCanvas):
  
@@ -201,6 +243,7 @@ class PlotCanvas(FigureCanvas):
         self.x = []
         self.y = []
         self.plot()
+       
  
  
     def plot(self, fit_plot = None):
@@ -213,8 +256,10 @@ class PlotCanvas(FigureCanvas):
             ax.plot(fit_x, fit_y)
         ax.set_xlabel('Position in Microns')
         ax.set_ylabel('Integrated Intensity')
-        self.figure.tight_layout()
+        self.figure.tight_layout()  # ensures the view of the layout is always visible no matter size of GUI
         self.draw()
+        self.bind()
+        
  
 
 if __name__ == '__main__':

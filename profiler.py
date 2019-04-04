@@ -69,7 +69,7 @@ class App(QWidget):
         
         # Reset button
         self.button2 = QPushButton('Reset', self)
-        self.button2.clicked.connect(self.reset)
+        self.button2.clicked.connect(self.button_click)
 	
 	# sets up the Figure Plotting
         self.canvas = PlotCanvas(self, width=5, height=4)
@@ -111,7 +111,7 @@ class App(QWidget):
             self.x = np.array([])
 	    self.y = np.array([])
 
-        else 
+         
             for k in range(self.no_of_rows):
             
                 hlp = self.tableWidget.item(k,0)

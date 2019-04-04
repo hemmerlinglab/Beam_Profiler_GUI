@@ -10,3 +10,6 @@
 	*this seems like a very easy thing to do, when pressed, multiple all the xdata by 25.4 to convert from inches 1/1000 inch to microns
 	(double check this)
 - reformat how the buttons look (size, placement, etc)
+- add a button which adds in sample data
+- if there is more data then the space given in the table, possibly an append function to make it larger
+- adding rows and columns on the fly
