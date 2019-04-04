@@ -24,6 +24,7 @@ from matplotlib.figure import Figure
 
 
 # define objective function: returns the array to be minimized
+# creating the model to fit to
 def fcn2min(params, x, data, plot_fit = False):
     """Model a decaying sine wave and subtract data."""
     amplitude = params['amplitude']
@@ -39,7 +40,8 @@ def fcn2min(params, x, data, plot_fit = False):
         x_plot = np.linspace(np.min(x), np.max(x), 100)
         model = amplitude/2.0 * (1 - scipy.special.erf(np.sqrt(2.0) * (x_plot - x_offset)/waist)) + y_offset
         return (x_plot, model)
-    
+
+   
 
 # Creation of the Widget
 class App(QWidget):
@@ -73,10 +75,7 @@ class App(QWidget):
         self.button2 = QPushButton('Fit to Sample Data?', self)
         self.button2.clicked.connect(self.sample_data_button_click)
 
-        # Reset button the clear the plot
-#        self.button3 = QPushButton('Clear plot data?', self)
-#        self.button3.clicked.connect(self.clear_plot)
-	
+
 	# sets up the Figure Plotting
         self.canvas = PlotCanvas(self, width=5, height=4)
         self.canvas.move(0,0)
@@ -212,12 +211,6 @@ class App(QWidget):
             ])
         return hlp
 
-  #  @pyqtSlot()
-  #  def Clear(self):
-  #      self.widget.canvas.ax.clear()
-  #      self.widget.canvas.draw()
-  #      self.widget_2.canvas.ax.clear()
-  #               
     def createTable(self):
        # Create table
         self.tableWidget = QTableWidget()

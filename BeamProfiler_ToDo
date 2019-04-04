@@ -15,7 +15,8 @@
 - if there is more data then the space given in the table, possibly an append function to make it larger
 - adding rows and columns on the fly
 - in the textbox, show the error on the params measurement, should have a very low error if fit is good, and should have high error if fit is not
-
+- want to be able to handle data of zeros, want to handle that with an if else statement in the params.add section of button click section
+- not sure if this code can handle any beam size, might need to change this in the future
 
 Changes implemented:
 - x and y axes labeled
