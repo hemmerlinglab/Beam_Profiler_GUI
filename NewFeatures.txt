@@ -1,6 +1,6 @@
 Changes implemented:
 - x and y axes labeled
-- previous plot data gets deleted automatically
+- previous plot data gets deleted when new data is added amd refit
 - shows an example plot, added a button which reverts back the entire plot to
 fitting to sample data
 

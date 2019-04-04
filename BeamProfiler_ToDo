@@ -1,6 +1,7 @@
 - add conversion from inches to microns, want to be able to add the data in inches and have it convert
 - auto update the fit to automatically fit when the data is changed
 	*not quite sure where to start on this one
+	- currently it does refit to new data, but it does not do this automatically
 - Make a reset button which clears the data and fit
 	*want to make an if else statement inside the push_button function (or similarly named function)
 	if reset button was pressed == reinitialize the entire plot, set the data to all zeros and make the plot show up 	
@@ -13,10 +14,11 @@
 - add a button which adds in sample data
 - if there is more data then the space given in the table, possibly an append function to make it larger
 - adding rows and columns on the fly
+- in the textbox, show the error on the params measurement, should have a very low error if fit is good, and should have high error if fit is not
 
 
 Changes implemented:
 - x and y axes labeled
-- previous plot data gets deleted automatically
+- previous plot data gets deleted when new data is added in, need to press fit again
 - shows an example plot, added a button which reverts back the entire plot to 
 fitting to sample data
