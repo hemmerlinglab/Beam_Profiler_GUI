@@ -16,7 +16,7 @@ Functions to Add:
 
 
 
-Features:
+Features to Add:
 1. auto update the fit to automatically fit when the data is changed
 	*not quite sure where to start on this one
 	- currently it does refit to new data, but it does not do this automatically
