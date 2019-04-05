@@ -31,6 +31,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 import numpy as np
 import scipy
+import lmfit
 from lmfit import Minimizer, Parameters, report_fit
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QLineEdit
@@ -98,8 +99,8 @@ class App(QWidget):
         self.button.clicked.connect(self.button_click)
         
         # Fit to sample data button
-        self.button2 = QPushButton('Fit to Sample Data?', self)
-        self.button2.clicked.connect(self.sample_data_button_click)
+       # self.button2 = QPushButton('Fit to Sample Data?', self)
+       # self.button2.clicked.connect(self.sample_data_button_click)
 
 
 	# sets up the Figure Plotting
@@ -117,7 +118,7 @@ class App(QWidget):
         self.layout.addWidget(self.tableWidget)  # Table widget to put the data in
         self.layout.addWidget(self.canvas)       # Creates the plot widget   
         self.layout.addWidget(self.button)       # button widget which fits the data
-        self.layout.addWidget(self.button2)      # button widget which reinitializes the plot
+        #self.layout.addWidget(self.button2)      # button widget which reinitializes the plot
 #        self.layout.addWidget(self.button3)      # button widget which clears the previous plot data
         self.layout.addWidget(self.textbox)      # textbox to output the relevant params: waist, amplitude, offsets
         self.setLayout(self.layout)              # sets it all up            
@@ -325,11 +326,11 @@ class App(QWidget):
         # do fit, here with leastsq model
         minner = Minimizer(fcn2min, params, fcn_args=(self.x, self.y))
         result = minner.minimize()
-#       
-#        print('confidence:')
-#        print(lmfit.fit_report(result.params))
-#
-        # write error report
+       
+        print('CONFIDENCE!!!')
+        #print(lmfit.fit_report(result.params))
+
+      # write error report
         self.textbox.setText("")
         for k in params.keys():
             my_str = str(result.params[k].value)
@@ -340,47 +341,45 @@ class App(QWidget):
 
         self.canvas.plot(fit_plot = result)
         print(params)
-    
-    @pyqtSlot()
-    def sample_data_button_click(self):
-        print('sample data button pressed')
-        self.x = np.array([])
-        self.y = np.array([])
-
-        hlp = self.sample_data()
-           
-        self.x = hlp[:,0]
-        self.y = hlp[:,1]
-        
-        print(self.x)
-        print(self.y)
-
-        params = Parameters()
-        params.add('amplitude', value=np.max(self.y), min=(np.max(self.y) - np.min(self.y))/2.0, max=(np.max(self.y) - np.min(self.y)))
-        params.add('waist', value=(np.max(self.x)-np.min(self.x))/2.0, min=10.0, max=2000)
-        params.add('x_offset', value=np.mean(self.x), min=np.min(self.x), max = np.max(self.x))
-        params.add('y_offset', value=0.0, min=0.00, max=np.max(self.y), vary = False)
-
-        # do fit, here with leastsq model
-        # Creating the Minimizer which utilizes fcn2min function with the model to fit to
-        minner = Minimizer(fcn2min, params, fcn_args=(self.x, self.y))
-        result = minner.minimize()
-#        print('confidence:')
-#        print(lmfit.fit_report(result.params))
+#    
+#    @pyqtSlot()
+#    def sample_data_button_click(self):
+#        print('sample data button pressed')
+#        self.x = np.array([])
+#        self.y = np.array([])
 #
-        # write error report
-        self.textbox.setText("")
-        for k in params.keys():
-            my_str = str(result.params[k].value)
-            self.textbox.append(str(k) + " = " + my_str + "\n")
-
-        self.canvas.x = self.x
-        self.canvas.y = self.y
-
-        self.canvas.plot(fit_plot = result)
-
-        print(params)
-
+#        hlp = self.sample_data()
+#           
+#        self.x = hlp[:,0]
+#        self.y = hlp[:,1]
+#        
+#        print(self.x)
+#        print(self.y)
+#
+#        params = Parameters()
+#        params.add('amplitude', value=np.max(self.y), min=(np.max(self.y) - np.min(self.y))/2.0, max=(np.max(self.y) - np.min(self.y)))
+#        params.add('waist', value=(np.max(self.x)-np.min(self.x))/2.0, min=10.0, max=2000)
+#        params.add('x_offset', value=np.mean(self.x), min=np.min(self.x), max = np.max(self.x))
+#        params.add('y_offset', value=0.0, min=0.00, max=np.max(self.y), vary = False
+#
+#        minner = Minimizer(fcn2min, params, fcn_args=(self.x, self.y))
+#        result = minner.minimize() 
+##        print('confidence:')
+##        print(lmfit.fit_report(result.params))
+##
+#        # write error report
+#        self.textbox.setText("")
+#        for k in params.keys():
+#            my_str = str(result.params[k].value)
+#            self.textbox.append(str(k) + " = " + my_str + "\n")
+#
+#        self.canvas.x = self.x
+#        self.canvas.y = self.y
+#
+#        self.canvas.plot(fit_plot = result)
+#
+#        print(params)
+#
     def createTable(self):
        # Create table
         self.tableWidget = QTableWidget()
