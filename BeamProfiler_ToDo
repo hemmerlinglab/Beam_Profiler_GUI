@@ -1,3 +1,10 @@
+Possible Bugs:
+- Tried to see if the Parameters() function contained information on the confidence (it does not) by printing it. The values for the parameters always stayed the same on the terminal but the textbox updated with the new data.
+	* this means the textbox could be displaying wrong information or the communication between Parameters function and other variables is just weird
+-fcn2min function was in there twice, kept it at the very top as a global function and deleted the other one, I ran the code and it works just the same but I do not know if there was a specific reason for doing this
+
+
+
 - add conversion from inches to microns, want to be able to add the data in inches and have it convert
 - auto update the fit to automatically fit when the data is changed
 	*not quite sure where to start on this one
