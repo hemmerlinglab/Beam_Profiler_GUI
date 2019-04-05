@@ -1,0 +1,7 @@
+Changes implemented:
+- x and y axes labeled
+- previous plot data gets deleted when new data is added amd refit, clears old data from old runs
+- shows an example plot, added a button which reverts back the entire plot to
+fitting to sample data
+
+Version 4: Added a confidence error display in the textbox to show how good the fit is
