@@ -1,7 +1,9 @@
-Changes implemented:
-- x and y axes labeled
-- previous plot data gets deleted when new data is added amd refit, clears old data from old runs
-- shows an example plot, added a button which reverts back the entire plot to
-fitting to sample data
+Function of the Code:
+Add Knife Edge Data in a table, press fit and the code will fit the data to an error function. Also includes a textbox which prints out the waist value in microns
 
-Version 4: Added a confidence error display in the textbox to show how good the fit is
+
+New Additions:
+1. Old Data gets cleared out when new data is added in and the Fit Button is pressed
+2. Prints the confidence in fit and error percentages of different parameters
+3. Button which adds a sample plot
+
