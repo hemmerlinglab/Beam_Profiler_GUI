@@ -1,32 +1,34 @@
 Possible Bugs:
 - Tried to see if the Parameters() function contained information on the confidence (it does not) by printing it. The values for the parameters always stayed the same on the terminal but the textbox updated with the new data.
 	* this means the textbox could be displaying wrong information or the communication between Parameters function and other variables is just weird
--fcn2min function was in there twice, kept it at the very top as a global function and deleted the other one, I ran the code and it works just the same but I do not know if there was a specific reason for doing this
+- not sure if this code can handle any beam size, might need to change this in the future
 
-
-
-- add conversion from inches to microns, want to be able to add the data in inches and have it convert
-- auto update the fit to automatically fit when the data is changed
-	*not quite sure where to start on this one
-	- currently it does refit to new data, but it does not do this automatically
-- Make a reset button which clears the data and fit
+Functions to Add:
+1. Make a reset button which clears the data and fit
 	*want to make an if else statement inside the push_button function (or similarly named function)
 	if reset button was pressed == reinitialize the entire plot, set the data to all zeros and make the plot show up 	
 	as it did when start up the GUI, with nothing on it
 	else plot the data like it was doing before
-- possibly make a conversion button which automatically converts the numbers when pressed
+2. Add conversion from inches to microns, want to be able to add the data in inches and have it convert
+   possibly make a conversion button which automatically converts the numbers when pressed
 	*this seems like a very easy thing to do, when pressed, multiple all the xdata by 25.4 to convert from inches 1/1000 inch to microns
 	(double check this)
-- reformat how the buttons look (size, placement, etc)
-- add a button which adds in sample data
-- if there is more data then the space given in the table, possibly an append function to make it larger
-- adding rows and columns on the fly
-- in the textbox, show the error on the params measurement, should have a very low error if fit is good, and should have high error if fit is not
-- want to be able to handle data of zeros, want to handle that with an if else statement in the params.add section of button click section
-- not sure if this code can handle any beam size, might need to change this in the future
+
+
+
+Features:
+1. auto update the fit to automatically fit when the data is changed
+	*not quite sure where to start on this one
+	- currently it does refit to new data, but it does not do this automatically
+2. reformat how the buttons look (size, placement, etc)
+3. adding rows and columns on the fly if there is more data then the table provided, using append 
+4. want to be able to handle data of zeros, want to handle that with an if else statement in the params.add section of button click section
+5. reformat the textbox, looks weird **not a priority at all, just dont like the [[Variables]] array look in text
+
 
 Changes implemented:
 - x and y axes labeled
 - previous plot data gets deleted when new data is added in, need to press fit again
 - shows an example plot, added a button which reverts back the entire plot to 
 fitting to sample data
+- prints the confidence/error in the fit in the textbox, needed to actually import lmfit, if the fit is really bad the confidence numbers will show this
