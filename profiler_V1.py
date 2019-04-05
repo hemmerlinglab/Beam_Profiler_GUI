@@ -1,3 +1,5 @@
+# Very First Working Version, does not include axes labeled, confidence in fit report, previous data on plot stays even when new data is added (old data does not clear, no sample data button
+
 import sys
 from PyQt5.QtWidgets import QSizePolicy, QTextEdit, QMainWindow, QApplication, QWidget, QAction, QTableWidget,QTableWidgetItem,QVBoxLayout,QPushButton, QHBoxLayout
 from PyQt5.QtGui import QIcon
