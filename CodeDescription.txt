@@ -3,7 +3,7 @@ Add Knife Edge Data in a table, press fit and the code will fit the data to an e
 
 
 New Additions:
-1. Old Data gets cleared out when new data is added in and the Fit Button is pressed
+1. Old Data gets cleared out when new data is added in and refits the new data set in the textbox
 2. Prints the confidence in fit and error percentages of different parameters
 3. Button which adds a sample plot
 
