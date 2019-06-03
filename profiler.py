@@ -31,9 +31,9 @@ from matplotlib.figure import Figure
 def fcn2min(params, x, data, plot_fit = False):
     """Model a decaying sine wave and subtract data."""
     amplitude = params['amplitude']
-    waist = params['waist']
-    x_offset = params['x_offset']
-    y_offset = params['y_offset']
+    waist     = params['waist']
+    x_offset  = params['x_offset']
+    y_offset  = params['y_offset']
     
     if plot_fit == False:
         model = amplitude/2.0 * (1 - scipy.special.erf(np.sqrt(2.0) * (x - x_offset)/waist)) + y_offset
@@ -235,7 +235,7 @@ class App(QWidget):
         self.tableWidget.setColumnCount(2)
         self.tableWidget.move(0,0)
         
-	# Sample data that will fit to error function
+	   # Sample data that will fit to error function
         hlp = self.sample_data()
 
         self.x = hlp[:, 0]
