@@ -1,9 +1,9 @@
 import numpy as np
 
 
-a = 5
-b = 1
-c = 15
+a = 3
+b = 3
+c = 19
 
 
 inches = a*0.1 + b*0.025 + c*0.001

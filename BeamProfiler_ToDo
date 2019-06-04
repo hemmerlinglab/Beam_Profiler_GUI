@@ -1,3 +1,7 @@
+1. convert function
+2. export data button
+
+
 Possible Bugs:
 - Tried to see if the Parameters() function contained information on the confidence (it does not) by printing it. The values for the parameters always stayed the same on the terminal but the textbox updated with the new data.
 	* this means the textbox could be displaying wrong information or the communication between Parameters function and other variables is just weird
