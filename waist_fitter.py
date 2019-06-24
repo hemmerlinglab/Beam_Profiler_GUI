@@ -58,8 +58,8 @@ def main():
 
     # data after the first mirror
 
-    z  = np.array([-424,80,127,228,437,518,634,685]) * 1e-3
-    w  = np.array([302,748,741,850,1060,1148,1047,1167]) * 1e-6
+    z  = np.array([139,242,341,443]) * 1e-3
+    w  = np.array([394,289,253,216]) * 1e-6
     plt.plot(z,w/1e-6,'r.')
     result = fitting(z,w)
     
