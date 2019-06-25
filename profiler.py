@@ -165,7 +165,7 @@ class App(QWidget):
         params.add('amplitude', value=np.max(self.y), min=(np.max(self.y) - np.min(self.y))/2.0, max=(np.max(self.y) - np.min(self.y)))
         params.add('waist', value=(np.max(self.x)-np.min(self.x))/2.0, min=10.0, max=2000)
         params.add('x_offset', value=np.mean(self.x), min=np.min(self.x), max = np.max(self.x))
-        params.add('y_offset', value=0.0, min=0.00, max=np.max(self.y), vary = False)
+        params.add('y_offset', value=np.min(self.y), min=0.00, max=np.max(self.y), vary = False)
 
         # do fit, here with leastsq model
         minner = Minimizer(fcn2min, params, fcn_args=(self.x, self.y))
