@@ -151,15 +151,27 @@ class App(QWidget):
             
             hlp = self.tableWidget.item(k,0)
             if not hlp is None:
-                self.x = np.append(self.x, np.float(hlp.text()))
+                try:
+                    self.x = np.append(self.x, np.float(hlp.text()))
+                except:
+                    print(k)
+                    print(hlp.text())
             else:
                 break
             hlp = self.tableWidget.item(k,1)
             if not hlp is None:
-                self.y = np.append(self.y, np.float(hlp.text()))
+                try:
+                    self.y = np.append(self.y, np.float(hlp.text()))
+                except:
+                    print(k)
+                    print(hlp.text())
 
         print(self.x)
         print(self.y)
+
+	# convert
+        offset = self.x[0]
+        self.x = (self.x - self.x[0]) * 1.0/10.0 * 25.4 * 1000.0 # in um
 
         params = Parameters()
         params.add('amplitude', value=np.max(self.y), min=(np.max(self.y) - np.min(self.y))/2.0, max=(np.max(self.y) - np.min(self.y)))
@@ -279,7 +291,7 @@ class PlotCanvas(FigureCanvas):
         if not fit_plot is None:
             (fit_x, fit_y) = fcn2min(fit_plot.params, self.x, None, plot_fit = True)
             ax.plot(fit_x, fit_y)
-        ax.set_xlabel('Position in Microns')
+        ax.set_xlabel('Position (um)')
         ax.set_ylabel('Integrated Intensity')
         self.figure.tight_layout()  # ensures the view of the layout is always visible no matter size of GUI
         self.draw()
